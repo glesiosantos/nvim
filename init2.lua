@@ -34,64 +34,20 @@ require('lazy').setup({
 
   {
     'nvim-tree/nvim-tree.lua',
-    dependencies = {
-      'nvim-tree/nvim-web-devicons',
-    },
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('nvim-tree').setup()
-
       vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>')
     end,
   },
 
   {
     'nvim-telescope/telescope.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
+    dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       local builtin = require('telescope.builtin')
-
       vim.keymap.set('n', '<leader>ff', builtin.find_files)
       vim.keymap.set('n', '<leader>fg', builtin.live_grep)
-    end,
-  },
-
-  {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    event = { 'BufReadPost', 'BufNewFile' },
-
-    config = function()
-      local ok, treesitter = pcall(require, 'nvim-treesitter.configs')
-
-      if not ok then
-        return
-      end
-
-      treesitter.setup({
-        ensure_installed = {
-          'lua',
-          'ruby',
-          'go',
-          'gomod',
-          'gosum',
-          'html',
-          'css',
-          'javascript',
-          'typescript',
-          'tsx',
-          'json',
-        },
-
-        highlight = {
-          enable = true,
-        },
-
-        indent = {
-          enable = true,
-        },
-      })
     end,
   },
 
@@ -102,18 +58,14 @@ require('lazy').setup({
 
   {
     'mason-org/mason-lspconfig.nvim',
-
     dependencies = {
       'mason-org/mason.nvim',
       'neovim/nvim-lspconfig',
     },
-
     opts = {
       ensure_installed = {
         'html',
         'cssls',
-        'tailwindcss',
-        'ts_ls',
         'ruby_lsp',
         'rubocop',
         'gopls',
@@ -124,13 +76,10 @@ require('lazy').setup({
 
   {
     'neovim/nvim-lspconfig',
-
     config = function()
       local servers = {
         'html',
         'cssls',
-        'tailwindcss',
-        'ts_ls',
         'ruby_lsp',
         'rubocop',
         'gopls',
@@ -143,63 +92,38 @@ require('lazy').setup({
 
       vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
       vim.keymap.set('n', 'K', vim.lsp.buf.hover)
-
       vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action)
       vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
-
       vim.keymap.set('n', '<leader>f', function()
         vim.lsp.buf.format({ async = true })
       end)
-
-      -- GO TESTS
-      vim.keymap.set('n', '<leader>gt', ':!go test ./...<CR>')
-      vim.keymap.set('n', '<leader>gf', ':!go test %<CR>')
-
-      -- RSPEC TESTS
-      vim.keymap.set('n', '<leader>rt', ':!bundle exec rspec<CR>')
-      vim.keymap.set('n', '<leader>rf', ':!bundle exec rspec %<CR>')
     end,
   },
 
   {
     'hrsh7th/nvim-cmp',
-
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
       'L3MON4D3/LuaSnip',
       'saadparwaiz1/cmp_luasnip',
-      'rafamadriz/friendly-snippets',
     },
-
     config = function()
       local cmp = require('cmp')
-      local luasnip = require('luasnip')
-
-      require('luasnip.loaders.from_vscode').lazy_load()
 
       cmp.setup({
         snippet = {
           expand = function(args)
-            luasnip.lsp_expand(args.body)
+            require('luasnip').lsp_expand(args.body)
           end,
         },
-
         mapping = cmp.mapping.preset.insert({
           ['<Tab>'] = cmp.mapping.select_next_item(),
           ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-
-          ['<CR>'] = cmp.mapping.confirm({
-            select = true,
-          }),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
         }),
-
         sources = {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
-          { name = 'buffer' },
-          { name = 'path' },
         },
       })
     end,
